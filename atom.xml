@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-06-11T21:52:20.806Z</updated>
+  <updated>2019-06-13T11:58:53.026Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -21,15 +21,22 @@
     <link href="http://yoursite.com/2019/06/12/Java%E5%9F%BA%E7%A1%80-%E9%9B%86%E5%90%88/"/>
     <id>http://yoursite.com/2019/06/12/Java基础-集合/</id>
     <published>2019-06-11T21:13:03.000Z</published>
-    <updated>2019-06-11T21:52:20.806Z</updated>
+    <updated>2019-06-13T11:58:53.026Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="Java集合类"><a href="#Java集合类" class="headerlink" title="Java集合类"></a>Java集合类</h2><hr>]]></content>
+    <content type="html"><![CDATA[<ul><li><p>Java集合简介</p><p>Set：无序、不可重复</p><p>List：有序、重复的</p><p>Map：具有映射关系</p><p>Queue：队列集合实现</p></li></ul>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h2 id=&quot;Java集合类&quot;&gt;&lt;a href=&quot;#Java集合类&quot; class=&quot;headerlink&quot; title=&quot;Java集合类&quot;&gt;&lt;/a&gt;Java集合类&lt;/h2&gt;&lt;hr&gt;
+        &lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Java集合简介&lt;/p&gt;
+&lt;p&gt;Set：无序、不可重复&lt;/p&gt;
+&lt;p&gt;List：有序、重复的&lt;/p&gt;
+&lt;p&gt;Map：具有映射关系&lt;/p&gt;
+&lt;p&gt;Queue：队列集合实现&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 
       
     

@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[Java基础-集合]]></title>
     <url>%2F2019%2F06%2F12%2FJava%E5%9F%BA%E7%A1%80-%E9%9B%86%E5%90%88%2F</url>
-    <content type="text"><![CDATA[Java集合类]]></content>
+    <content type="text"><![CDATA[Java集合简介 Set：无序、不可重复 List：有序、重复的 Map：具有映射关系 Queue：队列集合实现]]></content>
       <tags>
         <tag>java</tag>
         <tag>基础</tag>
