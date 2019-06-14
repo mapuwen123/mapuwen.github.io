@@ -88,7 +88,7 @@
     <div class="article-gallery-photos">
       
         
-          <a class="article-gallery-img" href="/2019/06/12/Java基础-集合/" rel="gallery_cjwwaqovx0001oq1mhxtgond5">
+          <a class="article-gallery-img" href="/2019/06/12/Java基础-集合/" rel="gallery_cjwwausb50001t11m5gjxdp7l">
             <img src="/img/20190612-0/3985563-e7febf364d8d8235.png" itemprop="image">
           </a>
         
@@ -118,17 +118,17 @@
 <li><p>Java的集合类主要由两个接口派生而出:</p>
 <ul>
 <li><p>Collection</p>
-<p><img src="../img/20190612-0/3985563-e7febf364d8d8235-1.png" alt="Collection Img"></p>
+<p><img src="img/20190612-0/3985563-e7febf364d8d8235-1.png" alt="Collection Img"></p>
 </li>
 <li><p>Map (key-value具有映射关系的集合)</p>
-<p><img src="../img/20190612-0/3985563-06052107849a7603-2.png" alt="Map Img"></p>
+<p><img src="img/20190612-0/3985563-06052107849a7603-2.png" alt="Map Img"></p>
 </li>
 </ul>
 </li>
 </ul>
 <h2 id="二、Collection接口："><a href="#二、Collection接口：" class="headerlink" title="二、Collection接口："></a>二、Collection接口：</h2><h3 id="1-简介："><a href="#1-简介：" class="headerlink" title="1. 简介："></a>1. 简介：</h3><pre><code>Collection接口是Set,Queue,List的父接口。</code></pre><h4 id="1-1-接口中定义的方法"><a href="#1-1-接口中定义的方法" class="headerlink" title="1.1. 接口中定义的方法"></a>1.1. 接口中定义的方法</h4><p><img src="../img/20190612-0/3985563-414332ffe4733274-3.png" alt="Collection Function Img"></p>
 <p><strong><em>注：重点看iterator()方法</em></strong></p>
-<h4 id="1-2-使用Iterator遍历集合元素"><a href="#1-2-使用Iterator遍历集合元素" class="headerlink" title="1.2. 使用Iterator遍历集合元素"></a>1.2. 使用Iterator遍历集合元素</h4><pre><code>Iterator接口经常被称作迭代器，它是Collection接口的父接口。但Iterator主要用于遍历集合中的元素。 Iterator接口中主要定义了2个方法：</code></pre><p><img src="../img/20190612-0/3985563-63737a2d81713a47-4.png" alt="Iterator Img"></p>
+<h4 id="1-2-使用Iterator遍历集合元素"><a href="#1-2-使用Iterator遍历集合元素" class="headerlink" title="1.2. 使用Iterator遍历集合元素"></a>1.2. 使用Iterator遍历集合元素</h4><pre><code>Iterator接口经常被称作迭代器，它是Collection接口的父接口。但Iterator主要用于遍历集合中的元素。 Iterator接口中主要定义了2个方法：</code></pre><p><img src="img/20190612-0/3985563-63737a2d81713a47-4.png" alt="Iterator Img"></p>
 <p>使用迭代器遍历集合：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//创建集合</span></span><br><span class="line">    Collection&lt;Integer&gt; collection = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i ++) &#123;</span><br><span class="line">        collection.add(i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获得集合的迭代器</span></span><br><span class="line">    Iterator iterator = collection.iterator();</span><br><span class="line">    <span class="keyword">while</span> (iterator.hasNext()) &#123; <span class="comment">//判断是否存在下一个元素</span></span><br><span class="line">        <span class="comment">//取出元素并打印</span></span><br><span class="line">        System.out.println(iterator.next() + <span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -137,7 +137,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/12/Java基础-集合/" data-id="cjwwaqovx0001oq1mhxtgond5" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/12/Java基础-集合/" data-id="cjwwausb50001t11m5gjxdp7l" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li></ul>
 
