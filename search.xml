@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Java集合-LinkedList]]></title>
+    <url>%2F2019%2F06%2F19%2FJava%E9%9B%86%E5%90%88-LinkedList%2F</url>
+    <content type="text"></content>
+      <tags>
+        <tag>java</tag>
+        <tag>基础</tag>
+        <tag>集合</tag>
+        <tag>开发</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Java集合-ArrayList]]></title>
     <url>%2F2019%2F06%2F16%2FJava%E9%9B%86%E5%90%88-ArrayList%2F</url>
     <content type="text"><![CDATA[一、概述以数组实现。节约空间，但数组有容量限制。超出限制时会增加50%容量，用System.arraycopy()复制到新的数组，因此最好能给出数组大小的预估值。默认第一次插入元素时创建大小为10的数组。 按数组下标访问元素—get(i)/set(i,e) 的性能很高，这是数组的基本优势。 直接在数组末尾加入元素—add(e)的性能也高，但如果按下标插入、删除元素—add(i,e), remove(i), remove(e)，则要用System.arraycopy()来移动部分受影响的元素，性能就变差了，这是基本劣势。 ArrayList是一个相对来说比较简单的数据结构，最重要的一点就是它的自动扩容，可以认为就是我们常说的“动态数组”。12345ArrayList&lt;String&gt; list = new ArrayList&lt;String&gt;();list.add("语文: 99");list.add("数学: 98");list.add("英语: 100");list.remove(0); 在执行这四条语句时，是这么变化的： 二、add函数当我们在ArrayList中增加元素的时候，会使用add函数。他会将元素放到末尾。具体实现如下： 12345public boolean add(E e) &#123; ensureCapacityInternal(size + 1); // 数组自动扩容 elementData[size++] = e; return true;&#125; 他的实现其实最核心的内容就是ensureCapacityInternal。这个函数就是自动扩容机制的核心。他的具体实现： 123456789101112131415161718192021222324252627private void ensureCapacityInternal(int minCapacity) &#123; if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123; minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity); &#125; ensureExplicitCapacity(minCapacity);&#125;private void ensureExplicitCapacity(int minCapacity) &#123; modCount++; // overflow-conscious code if (minCapacity - elementData.length &gt; 0) grow(minCapacity);&#125;private void grow(int minCapacity) &#123; // overflow-conscious code int oldCapacity = elementData.length; // 扩展为原来的1.5倍 int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1); // 如果扩为1.5倍还不满足需求，直接扩为需求值 if (newCapacity - minCapacity &lt; 0) newCapacity = minCapacity; if (newCapacity - MAX_ARRAY_SIZE &gt; 0) newCapacity = hugeCapacity(minCapacity); // minCapacity is usually close to size, so this is a win: elementData = Arrays.copyOf(elementData, newCapacity);&#125; 也就是说，当增加数据的时候，如果ArrayList的大小已经不满足需求时，那么就将数组变为原长度的1.5倍，之后的操作就是把老的数组拷到新的数组里面。例如，默认的数组大小是10，也就是说当我们add10个元素之后，再进行一次add时，就会发生自动扩容，数组长度由10变为了15具体情况如下所示： 三、set和get函数先做index检查，然后执行赋值或访问操作： 123456789101112public E set(int index, E element) &#123; //index检查，超出数组长度抛出IndexOutOfBoundsException异常 rangeCheck(index); E oldValue = elementData(index); elementData[index] = element; return oldValue;&#125;public E get(int index) &#123; rangeCheck(index); return elementData(index);&#125; 四、remove函数1234567891011121314public E remove(int index) &#123; //index检查，超出数组长度抛出IndexOutOfBoundsException异常 rangeCheck(index); modCount++; E oldValue = elementData(index); int numMoved = size - index - 1; if (numMoved &gt; 0) // 把后面的往前移 System.arraycopy(elementData, index+1, elementData, index, numMoved); // 把最后的置null elementData[--size] = null; // clear to let GC do its work return oldValue;&#125;]]></content>
       <tags>
         <tag>java</tag>
         <tag>基础</tag>
+        <tag>集合</tag>
         <tag>开发</tag>
       </tags>
   </entry>
@@ -17,6 +29,7 @@
       <tags>
         <tag>java</tag>
         <tag>基础</tag>
+        <tag>集合</tag>
         <tag>开发</tag>
       </tags>
   </entry>
