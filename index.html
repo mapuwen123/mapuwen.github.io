@@ -56,6 +56,106 @@
 
     
       
+        <article id="post-Android-事件分发" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h2 itemprop="name">
+      <a class="article-title" href="/2019/06/26/Android-事件分发/">Android-事件分发</a>
+    </h2>
+  
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/2019/06/26/Android-事件分发/" class="article-date">
+  <time datetime="2019-06-26T07:23:58.000Z" itemprop="datePublished">2019-06-26</time>
+</a>
+        
+      </div>
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+      
+
+      
+        <h2 id="Android-事件分发"><a href="#Android-事件分发" class="headerlink" title="Android-事件分发"></a>Android-事件分发</h2><h3 id="一、基础认识"><a href="#一、基础认识" class="headerlink" title="一、基础认识"></a>一、基础认识</h3><ul>
+<li><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4></li>
+</ul>
+<blockquote>
+<p>当用户触摸屏幕时（<code>View</code> 或 <code>ViewGroup</code>派生的控件），将产生点击事件（<code>Touch</code>事件）</p>
+<p><code>Touch</code>事件的相关细节（发生触摸的位置、时间等）被封装成<code>MotionEvent</code>对象</p>
+</blockquote>
+<ul>
+<li><h4 id="事件类型"><a href="#事件类型" class="headerlink" title="事件类型"></a>事件类型</h4><table>
+<thead>
+<tr>
+<th>事件类型</th>
+<th>具体动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MotionEvent.ACTION_DOWN</td>
+<td>按下View（所有事件的开始）</td>
+</tr>
+<tr>
+<td>MotionEvent.ACTION_UP</td>
+<td>抬起View（与DOWN对应）</td>
+</tr>
+<tr>
+<td>MotionEvent.ACTION_MOVE</td>
+<td>滑动View</td>
+</tr>
+<tr>
+<td>MotionEvent.ACTION_CANCEL</td>
+<td>结束事件（非人为原因）</td>
+</tr>
+</tbody></table>
+</li>
+<li><h4 id="事件列"><a href="#事件列" class="headerlink" title="事件列"></a>事件列</h4><p>  从手指接触屏幕 至 手指离开屏幕，这个过程产生的一系列事件</p>
+<blockquote>
+<p>注：一般情况下，事件列都是以DOWN事件开始、UP事件结束，中间有无数的MOVE事件，如下图：<br><img src="%E2%80%8E%E2%81%A8/img%E2%81%A9/20190626-0%E2%81%A9/20190626-0%E2%81%A9-0.png" alt="AndroidEvent img"></p>
+</blockquote>
+</li>
+<li><h4 id="事件分发的顺序"><a href="#事件分发的顺序" class="headerlink" title="事件分发的顺序"></a>事件分发的顺序</h4><p>  即 事件传递的顺序：Activity -&gt; ViewGroup -&gt; View<br><img src="%E2%80%8E%E2%81%A8/img%E2%81%A9/20190626-0%E2%81%A9/20190626-0%E2%81%A9-1.png" alt="AndroidEvent1 img"></p>
+</li>
+<li><h4 id="事件分发过程由哪些方法协作完成"><a href="#事件分发过程由哪些方法协作完成" class="headerlink" title="事件分发过程由哪些方法协作完成"></a>事件分发过程由哪些方法协作完成</h4><p>  dispatchTouchEvent() 、onInterceptTouchEvent()和onTouchEvent()<br><img src="%E2%80%8E%E2%81%A8/img%E2%81%A9/20190626-0%E2%81%A9/20190626-0%E2%81%A9-2.png" alt="AndroidEvent2 img"></p>
+</li>
+</ul>
+<h3 id="二、Activity的事件分发"><a href="#二、Activity的事件分发" class="headerlink" title="二、Activity的事件分发"></a>二、Activity的事件分发</h3><pre><code>当一个点击事件发生时，事件最先传到Activity的dispatchTouchEvent()进行事件分发</code></pre><h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 源码分析：Activity.dispatchTouchEvent（）</span></span><br><span class="line"><span class="comment">  */</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 一般事件列开始都是DOWN事件 = 按下事件，故此处基本是true</span></span><br><span class="line">            <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line"></span><br><span class="line">                onUserInteraction();</span><br><span class="line">                <span class="comment">// -&gt;&gt;分析1</span></span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// -&gt;&gt;分析2</span></span><br><span class="line">            <span class="keyword">if</span> (getWindow().superDispatchTouchEvent(ev)) &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                <span class="comment">// 若getWindow().superDispatchTouchEvent(ev)的返回true</span></span><br><span class="line">                <span class="comment">// 则Activity.dispatchTouchEvent（）就返回true，则方法结束。即 ：该点击事件停止往下传递 &amp; 事件传递过程结束</span></span><br><span class="line">                <span class="comment">// 否则：继续往下调用Activity.onTouchEvent</span></span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// -&gt;&gt;分析4</span></span><br><span class="line">            <span class="keyword">return</span> onTouchEvent(ev);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 分析1：onUserInteraction()</span></span><br><span class="line"><span class="comment">  * 作用：实现屏保功能</span></span><br><span class="line"><span class="comment">  * 注：</span></span><br><span class="line"><span class="comment">  *    a. 该方法为空方法</span></span><br><span class="line"><span class="comment">  *    b. 当此activity在栈顶时，触屏点击按home，back，menu键等都会触发此方法</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUserInteraction</span><span class="params">()</span> </span>&#123; </span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 回到最初的调用原处</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 分析2：getWindow().superDispatchTouchEvent(ev)</span></span><br><span class="line"><span class="comment">  * 说明：</span></span><br><span class="line"><span class="comment">  *     a. getWindow() = 获取Window类的对象</span></span><br><span class="line"><span class="comment">  *     b. Window类是抽象类，其唯一实现类 = PhoneWindow类；即此处的Window类对象 = PhoneWindow类对象</span></span><br><span class="line"><span class="comment">  *     c. Window类的superDispatchTouchEvent() = 1个抽象方法，由子类PhoneWindow类实现</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">superDispatchTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> mDecor.superDispatchTouchEvent(event);</span><br><span class="line">        <span class="comment">// mDecor = 顶层View（DecorView）的实例对象</span></span><br><span class="line">        <span class="comment">// -&gt;&gt; 分析3</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 分析3：mDecor.superDispatchTouchEvent(event)</span></span><br><span class="line"><span class="comment">  * 定义：属于顶层View（DecorView）</span></span><br><span class="line"><span class="comment">  * 说明：</span></span><br><span class="line"><span class="comment">  *     a. DecorView类是PhoneWindow类的一个内部类</span></span><br><span class="line"><span class="comment">  *     b. DecorView继承自FrameLayout，是所有界面的父类</span></span><br><span class="line"><span class="comment">  *     c. FrameLayout是ViewGroup的子类，故DecorView的间接父类 = ViewGroup</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">superDispatchTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.dispatchTouchEvent(event);</span><br><span class="line">        <span class="comment">// 调用父类的方法 = ViewGroup的dispatchTouchEvent()</span></span><br><span class="line">        <span class="comment">// 即 将事件传递到ViewGroup去处理，详细请看ViewGroup的事件分发机制</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 回到最初的调用原处</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 分析4：Activity.onTouchEvent（）</span></span><br><span class="line"><span class="comment">  * 定义：属于顶层View（DecorView）</span></span><br><span class="line"><span class="comment">  * 说明：</span></span><br><span class="line"><span class="comment">  *     a. DecorView类是PhoneWindow类的一个内部类</span></span><br><span class="line"><span class="comment">  *     b. DecorView继承自FrameLayout，是所有界面的父类</span></span><br><span class="line"><span class="comment">  *     c. FrameLayout是ViewGroup的子类，故DecorView的间接父类 = ViewGroup</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 当一个点击事件未被Activity下任何一个View接收 / 处理时</span></span><br><span class="line">        <span class="comment">// 应用场景：处理发生在Window边界外的触摸事件</span></span><br><span class="line">        <span class="comment">// -&gt;&gt; 分析5</span></span><br><span class="line">        <span class="keyword">if</span> (mWindow.shouldCloseOnTouch(<span class="keyword">this</span>, event)) &#123;</span><br><span class="line">            finish();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">// 即 只有在点击事件在Window边界外才会返回true，一般情况都返回false，分析完毕</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 分析5：mWindow.shouldCloseOnTouch(this, event)</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldCloseOnTouch</span><span class="params">(Context context, MotionEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 主要是对于处理边界外点击事件的判断：是否是DOWN事件，event的坐标是否在边界内等</span></span><br><span class="line">    <span class="keyword">if</span> (mCloseOnTouchOutside &amp;&amp; event.getAction() == MotionEvent.ACTION_DOWN</span><br><span class="line">            &amp;&amp; isOutOfBounds(context, event) &amp;&amp; peekDecorView() != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">// 返回true：说明事件在边界外，即 消费事件</span></span><br><span class="line">    <span class="comment">// 返回false：未消费（默认）</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 回到分析4调用原处</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><pre><code>当一个点击事件发生时，从Activity的事件分发开始（Activity.dispatchTouchEvent()）</code></pre><p><img src="%E2%80%8E%E2%81%A8/img%E2%81%A9/20190626-0%E2%81%A9/20190626-0%E2%81%A9-3.png" alt="AndroidEvent3 img"></p>
+<ul>
+<li>方法总结<br><img src="%E2%80%8E%E2%81%A8/img%E2%81%A9/20190626-0%E2%81%A9/20190626-0%E2%81%A9-4.png" alt="AndroidEvent4 img"></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/26/Android-事件分发/" data-id="cjxde6z5o00006x1mocirtaeu" class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Androd/">Androd</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/事件分发/">事件分发</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+
+
+
+      
         <article id="post-Java集合-HashMap" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -90,8 +190,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/25/Java集合-HashMap/" data-id="cjxbtx1ic00060zs6eiaqn6sd" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/25/Java集合-HashMap/" data-id="cjxde6z6500056x1maxk2pmwa" class="article-share-link">分享</a>
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
+
     </footer>
 
   </div>
@@ -135,13 +237,9 @@
       
 
       
-        <h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><pre><code>以双向链表实现。链表无容量限制，但双向链表本身使用了更多空间，也需要额外的链表指针操作。
+        <h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">以双向链表实现。链表无容量限制，但双向链表本身使用了更多空间，也需要额外的链表指针操作。</span><br><span class="line"></span><br><span class="line">按下标访问元素—get(i)/set(i,e) 要悲剧的遍历链表将指针移动到位(如果i&gt;数组大小的一半，会从末尾移起)。</span><br><span class="line"></span><br><span class="line">插入、删除元素时修改前后节点的指针即可，但还是要遍历部分链表的指针才能移动到下标所指的位置，只有在链表两头的操作—add()，addFirst()，removeLast()或用iterator()上的remove()能省掉指针的移动。</span><br><span class="line"></span><br><span class="line">LinkedList是一个简单的数据结构，与ArrayList不同的是，他是基于链表实现的。</span><br></pre></td></tr></table></figure>
 
-按下标访问元素—get(i)/set(i,e) 要悲剧的遍历链表将指针移动到位(如果i&gt;数组大小的一半，会从末尾移起)。
-
-插入、删除元素时修改前后节点的指针即可，但还是要遍历部分链表的指针才能移动到下标所指的位置，只有在链表两头的操作—add()，addFirst()，removeLast()或用iterator()上的remove()能省掉指针的移动。
-
-LinkedList是一个简单的数据结构，与ArrayList不同的是，他是基于链表实现的。</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LinkedList&lt;String&gt; list = <span class="keyword">new</span> LinkedList&lt;String&gt;();</span><br><span class="line">list.add(<span class="string">"语文: 1"</span>);</span><br><span class="line">list.add(<span class="string">"数学: 2"</span>);</span><br><span class="line">list.add(<span class="string">"英语: 3"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LinkedList&lt;String&gt; list = <span class="keyword">new</span> LinkedList&lt;String&gt;();</span><br><span class="line">list.add(<span class="string">"语文: 1"</span>);</span><br><span class="line">list.add(<span class="string">"数学: 2"</span>);</span><br><span class="line">list.add(<span class="string">"英语: 3"</span>);</span><br></pre></td></tr></table></figure>
 
 <p><img src="/img/20190619-0/20190619-0-0.png" alt="LinkedList img"></p>
 <h2 id="二、set和get函数"><a href="#二、set和get函数" class="headerlink" title="二、set和get函数"></a>二、set和get函数</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">set</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    Node&lt;E&gt; x = node(index);</span><br><span class="line">    E oldVal = x.item;</span><br><span class="line">    x.item = element;</span><br><span class="line">    <span class="keyword">return</span> oldVal;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    <span class="keyword">return</span> node(index).item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -154,7 +252,7 @@ LinkedList是一个简单的数据结构，与ArrayList不同的是，他是基�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/19/Java集合-LinkedList/" data-id="cjxbtx1i100000zs61xj5w49d" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/19/Java集合-LinkedList/" data-id="cjxde6z6600066x1m0p0fcib3" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
@@ -228,7 +326,7 @@ ArrayList是一个相对来说比较简单的数据结构，最重要的一点�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/16/Java集合-ArrayList/" data-id="cjxbtx1i700020zs69x70aljf" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/16/Java集合-ArrayList/" data-id="cjxde6z6100026x1mfo8rwhf7" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
@@ -277,7 +375,7 @@ ArrayList是一个相对来说比较简单的数据结构，最重要的一点�
     <div class="article-gallery-photos">
       
         
-          <a class="article-gallery-img" href="/2019/06/12/Java基础-集合/" rel="gallery_cjxbtx1ib00050zs6o0qw9afs">
+          <a class="article-gallery-img" href="/2019/06/12/Java基础-集合/" rel="gallery_cjxde6z6700076x1mnmc39sju">
             <img src="/img/20190612-0/3985563-e7febf364d8d8235.png" itemprop="image">
           </a>
         
@@ -370,7 +468,7 @@ List作为Collection接口的子接口，可以使用Collection接口里的全�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/12/Java基础-集合/" data-id="cjxbtx1ib00050zs6o0qw9afs" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/12/Java基础-集合/" data-id="cjxde6z6700076x1mnmc39sju" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
