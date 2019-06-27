@@ -56,6 +56,63 @@
 
     
       
+        <article id="post-Activity启动流程" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h2 itemprop="name">
+      <a class="article-title" href="/2019/06/27/Activity启动流程/">Activity启动流程</a>
+    </h2>
+  
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/2019/06/27/Activity启动流程/" class="article-date">
+  <time datetime="2019-06-27T15:03:51.000Z" itemprop="datePublished">2019-06-27</time>
+</a>
+        
+      </div>
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+      
+
+      
+        <h2 id="Activity启动流程"><a href="#Activity启动流程" class="headerlink" title="Activity启动流程"></a>Activity启动流程</h2><p>Activity跳转调用Activity.startActivity()方法，最终本质还是调用startActivityForResult（）方法。</p>
+<h4 id="源码："><a href="#源码：" class="headerlink" title="源码："></a>源码：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent, @Nullable Bundle options)</span> </span>&#123;        <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>, options);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Note we want to go through this call for compatibility with</span></span><br><span class="line">        <span class="comment">// applications that may have overridden the method.</span></span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(@RequiresPermission Intent intent, <span class="keyword">int</span> requestCode,</span></span></span><br><span class="line"><span class="function"><span class="params">            @Nullable Bundle options)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 如果mParent为空则调用 Instrumentation.execStartActivity()</span></span><br><span class="line">        <span class="comment">// mParent这个字段是当前Activity的父Activity</span></span><br><span class="line">        <span class="comment">//一般只有TabActivity中才会对其赋值</span></span><br><span class="line">        <span class="comment">//但由于后来被Fragment取代废弃所以这个值会一直未null</span></span><br><span class="line">        <span class="keyword">if</span> (mParent == <span class="keyword">null</span>) &#123;</span><br><span class="line">            options = transferSpringboardActivityOptions(options);</span><br><span class="line">            Instrumentation.ActivityResult ar =</span><br><span class="line">                mInstrumentation.execStartActivity(</span><br><span class="line">                    <span class="keyword">this</span>, mMainThread.getApplicationThread(), mToken, <span class="keyword">this</span>,</span><br><span class="line">                    intent, requestCode, options);</span><br><span class="line">            <span class="keyword">if</span> (ar != <span class="keyword">null</span>) &#123;</span><br><span class="line">                mMainThread.sendActivityResult(</span><br><span class="line">                    mToken, mEmbeddedID, requestCode, ar.getResultCode(),</span><br><span class="line">                    ar.getResultData());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//requestCode</span></span><br><span class="line">            <span class="keyword">if</span> (requestCode &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// If this start is requesting a result, we can avoid making</span></span><br><span class="line">                <span class="comment">// the activity visible until the result is received.  Setting</span></span><br><span class="line">                <span class="comment">// this code during onCreate(Bundle savedInstanceState) or onResume() will keep the</span></span><br><span class="line">                <span class="comment">// activity hidden during this time, to avoid flickering.</span></span><br><span class="line">                <span class="comment">// This can only be done when a result is requested because</span></span><br><span class="line">                <span class="comment">// that guarantees we will get information back when the</span></span><br><span class="line">                <span class="comment">// activity is finished, no matter what happens to it.</span></span><br><span class="line">                mStartedActivity = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            cancelInputsAndStartExitTransition(options);</span><br><span class="line">            <span class="comment">// TODO Consider clearing/flushing other event sources and events for child windows.</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</span><br><span class="line">                mParent.startActivityFromChild(<span class="keyword">this</span>, intent, requestCode, options);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// Note we want to go through this method for compatibility with</span></span><br><span class="line">                <span class="comment">// existing applications that may have overridden it.</span></span><br><span class="line">                mParent.startActivityFromChild(<span class="keyword">this</span>, intent, requestCode);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：源码 <code>startActivity()</code> 方法内部调用 <code>startActivityForResult()</code> 方法 <code>requestCode</code> 参数默认为 <code>-1</code> ， 所以我们调用 <code>startActivityForResult()</code> 的时候如果 <code>requestCode</code> 参数小于0则不会回调 <code>onActivityResult</code></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/27/Activity启动流程/" data-id="cjxeug0ac0001om1m2z1l4w1t" class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Activity/">Activity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码/">源码</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+
+
+
+      
         <article id="post-Android-事件分发" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -158,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/26/Android-事件分发/" data-id="cjxesqn660011la1m7lx0hs0k" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/26/Android-事件分发/" data-id="cjxeug0ai0004om1m5kj18r7d" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Androd/">Androd</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li></ul>
 
@@ -209,7 +266,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/25/Java集合-HashMap/" data-id="cjxesqn5k0005la1mlj36e61h" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/25/Java集合-HashMap/" data-id="cjxeug0aj0005om1mucxy4usr" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
@@ -271,7 +328,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/19/Java集合-LinkedList/" data-id="cjxesqn5f0002la1msnlcyakr" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/19/Java集合-LinkedList/" data-id="cjxeug0b70012om1mhqau1c7d" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
@@ -345,7 +402,7 @@ ArrayList是一个相对来说比较简单的数据结构，最重要的一点�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/16/Java集合-ArrayList/" data-id="cjxesqn5i0004la1mgdsjga93" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/16/Java集合-ArrayList/" data-id="cjxeug0ag0003om1met7xw88d" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
@@ -394,7 +451,7 @@ ArrayList是一个相对来说比较简单的数据结构，最重要的一点�
     <div class="article-gallery-photos">
       
         
-          <a class="article-gallery-img" href="/2019/06/12/Java基础-集合/" rel="gallery_cjxesqn590000la1mfzcuzg1h">
+          <a class="article-gallery-img" href="/2019/06/12/Java基础-集合/" rel="gallery_cjxeug0a80000om1ms87nra8f">
             <img src="/img/20190612-0/3985563-e7febf364d8d8235.png" itemprop="image">
           </a>
         
@@ -487,7 +544,7 @@ List作为Collection接口的子接口，可以使用Collection接口里的全�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/12/Java基础-集合/" data-id="cjxesqn590000la1mfzcuzg1h" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/12/Java基础-集合/" data-id="cjxeug0a80000om1ms87nra8f" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
