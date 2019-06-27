@@ -59,7 +59,9 @@
 
 直接在数组末尾加入元素—add(e)的性能也高，但如果按下标插入、删除元素—add(i,e), remove(i), remove(e)，则要用System.arraycopy()来移动部分受影响的元素，性能就变差了，这是基本劣势。
 
-ArrayList是一个相对来说比较简单的数据结构，最重要的一点就是它的自动扩容，可以认为就是我们常说的“动态数组”。</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">list.add(<span class="string">"语文: 99"</span>);</span><br><span class="line">list.add(<span class="string">"数学: 98"</span>);</span><br><span class="line">list.add(<span class="string">"英语: 100"</span>);</span><br><span class="line">list.remove(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+ArrayList是一个相对来说比较简单的数据结构，最重要的一点就是它的自动扩容，可以认为就是我们常说的“动态数组”。</code></pre><a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">list.add(<span class="string">"语文: 99"</span>);</span><br><span class="line">list.add(<span class="string">"数学: 98"</span>);</span><br><span class="line">list.add(<span class="string">"英语: 100"</span>);</span><br><span class="line">list.remove(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
 
 <p>在执行这四条语句时，是这么变化的：</p>
 <p><img src="/img/20190616-0/20190616-0-0.png" alt="Arraylist Img"></p>
@@ -80,7 +82,7 @@ ArrayList是一个相对来说比较简单的数据结构，最重要的一点�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/16/Java集合-ArrayList/" data-id="cjxeupins0002zu1m36ogv0b8" class="article-share-link">分享</a>
+      <a data-url="http://yoursite.com/2019/06/16/Java集合-ArrayList/" data-id="cjxeutswv00063q1movaybjj9" class="article-share-link">分享</a>
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/集合/">集合</a></li></ul>
 
